@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications Summary Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index_styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts for better typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <span class="navbar-brand"><i class="fas fa-file-alt"></i> Publications Summary Generator</span>
+            <button class="navbar-toggler" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-links">
+                <!-- Future navigation links can be added here -->
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <section class="upload-section">
+            <h1 class="header-title">Upload Your File</h1>
+            <p class="header-subtitle">Supported formats: .xlsx, .bib</p>
+            
+            <form id="uploadForm" method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}" class="upload-form" aria-labelledby="uploadFormLabel">
+                <div class="form-group">
+                    <label for="file" id="fileLabel" class="file-label" aria-label="Select a .xlsx or .bib file to upload">
+                        <i class="fas fa-upload"></i> Choose File
+                    </label>
+                    <input type="file" name="file" id="file" required autocomplete="file" aria-describedby="fileHelp" class="file-input">
+                    <span id="selectedFile" class="selected-file">No file chosen</span>
+                    <small id="fileHelp" class="form-text text-muted">Please select a file.</small>
+                </div>
+                <button type="submit" class="submit-btn">Upload</button>
+            </form>
+
+            <div id="loading" class="loading-container" aria-live="polite" style="display:none;">
+                <div class="loader"></div>
+                <p>Processing your file, please wait...</p>
+            </div>
+        </section>
+
+        <section class="app-description">
+            <p>
+                This tool is designed to streamline the process of highlighting faculty research accomplishments and preparing documentation for accreditation purposes. It provides a complete record of citations done by an author, generates a summary, and displays a graph based on the analyzed records.
+                <br><br>
+            
+                The tool accepts the following file formats: <strong>Excel spreadsheets</strong> (.xlsx), <strong>BibTeX files</strong> (.bib). 
+                <br>
+                <strong>Important</strong>: You can upload one file at a time, and the file must contain at least the Author's Name.
+                <br><br>
+            
+                Your input file should be structured as follows:
+                <table class="center-table">
+                    <thead>
+                        <tr>
+                            <th>Author Name</th>
+                            <th>Institution Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Doe</td>
+                            <td>University of Example</td>
+                        </tr>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>Another University</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+            
+                <strong>Usage Instructions:</strong>
+                <ol>
+                    <li>Click on <strong>"Choose File"</strong> or drag and drop your file into the designated area.</li>
+                    <li>Select the file you wish to upload.</li>
+                    <li>Press the <strong>Upload</strong> button.</li>
+                </ol>
+                <br>
+            
+                The generated summary is brief and contains key points about the author's publications. You can download the summary as a Word document.
+                <br><br>
+            
+                Currently, the limitations are being assessed and will be updated in future releases.
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span>© 2024 Innovator's Edge</span>
+            <div class="team-members">
+                <span>Team Members:</span>
+                <ul>
+                    <li>Vaibhav Singh</li>
+                    <li>Ria Singh</li>
+                    <li>Divyanshu Verma</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Toggle navbar links on small screens
+        $('.navbar-toggler').on('click', function() {
+            $('.navbar-links').toggleClass('active');
+            $(this).find('i').toggleClass('fa-times fa-bars');
+        });
+
+        // Display selected file name
+        document.getElementById('file').addEventListener('change', function () {
+            var fileName = this.files.length ? this.files[0].name : 'No file chosen';
+            document.getElementById('selectedFile').textContent = fileName;
+        });
+
+        // Handle form submission with AJAX
+        $(document).ready(function () {
+            $('#uploadForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#loading').show();
+                $('#loading p').text('Uploading...');
+
+                var formData = new FormData(this);
+                $.ajax({
+                    xhr: function() {
+                        var xhr = new XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function(e) {                            
+                            if (e.lengthComputable) {
+                                var percentComplete = Math.round((e.loaded / e.total) * 100);
+                                $('#loading p').text('Uploading: ' + percentComplete + '%');
+                                if (percentComplete === 100) {
+                                    $('#loading p').text('Processing your file, please wait...');
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    url: '{{ url_for("upload") }}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        window.location.href = '{{ url_for("results") }}';
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $('#loading').hide();
+                        alert('An error occurred: ' + errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
