@@ -17,7 +17,7 @@ The primary goals of this project are:
 - **Downloadable Summaries:** Users can download the publication summaries in Word format for easy reference and reporting.
 - **Publication Trend Analysis:** Visualize the publication trends of multiple authors using bar charts.
 - **Interactive Data Table:** View processed data in an interactive HTML table.
-- **Download CSV:** Export the processed publication data to a CSV file for further analysis.
+- **Download Word File:** Export the processed publication data to a Docx file for further analysis.
 
 ## Technologies Used
 
