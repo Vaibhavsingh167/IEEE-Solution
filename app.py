@@ -16,7 +16,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 app.secret_key = 'supersecretkey'  # Ensure you have a secret key for sessions and flash messages
 
 # Initialize Google Generative AI
-genai.configure(api_key="AIzaSyA_CXDGqn0nmoLeKd60yUg8l7F9uL3PSgk") # Replace with your actual API key
+genai.configure(api_key="AIzaS") # Replace with your actual API key
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 # Global variables
