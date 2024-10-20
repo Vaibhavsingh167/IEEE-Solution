@@ -2,11 +2,11 @@
 
 The **Automated Publications Summary Generator** is a Flask-based web application designed to help academic institutions and researchers summarize and analyze author publications. It leverages scholarly data, generates summaries, and visualizes trends in publication data. Users can upload files with author names and retrieve detailed publication metrics and summary reports.
 
-## To use- 
+## To use:
 
--Create two new folders in the directory- static and templates.
--Move the CSS files in static folder.
--Move the HTML files in templates folder.
+- Create two new folders in the directory- static and templates.
+- Move the CSS files in static folder.
+- Move the HTML files in templates folder.
 
 ## Project Objectives
 
