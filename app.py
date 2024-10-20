@@ -16,7 +16,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 app.secret_key = 'supersecretkey'  # Ensure you have a secret key for sessions and flash messages
 
 # Initialize Google Generative AI
-genai.configure(api_key="AIzaS") # Replace with your actual API key
+genai.configure(api_key="YOUR_API_KEY") # Replace with your actual API key
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 # Global variables
@@ -148,6 +148,29 @@ def generate_word_doc(summary_text):
 def index():
     return render_template('index.html')
 
+@app.route('/search', methods=['POST'])
+def search_by_author():
+    try:
+        author_name = request.form.get('author_name')
+        if not author_name:
+            flash('Please enter an author name.')
+            return redirect(request.url)
+
+        # You may define institution_name or fetch it from a default source
+        institution_name = ''  # Set to default or from a database
+
+        # Retrieve and process data for the author
+        result = retrieve_stuffs(author_name, institution_name)
+
+        global processed_df, results_html
+        processed_df = result
+        results_html = result.to_html(classes='table dataTable', index=False)
+
+        return redirect(url_for('results'))
+
+    except Exception as e:
+        flash(f'An error occurred during the search: {str(e)}')
+        return redirect(url_for('index'))
 
 
 @app.route('/upload', methods=['POST'])
